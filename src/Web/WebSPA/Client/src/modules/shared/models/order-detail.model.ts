@@ -1,6 +1,9 @@
 import {IOrderItem} from './orderItem.model';
 
 export interface IOrderDetail {
+    subtotal: number;
+    coupon: string;
+    discount: number;
     ordernumber: string;
     status: string;
     description: string;
