@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Autofac;
-    using Coupon.API.Dtos;
-    using Coupon.API.Filters;
-    using Coupon.API.Infrastructure.Models;
-    using Coupon.API.Infrastructure.Repositories;
+    using Dtos;
+    using Filters;
+    using Infrastructure.Models;
+    using Infrastructure.Repositories;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Data.SqlClient;
-using Coupon.API.IntegrationEvents.EventHandlers;
 using Coupon.API.IntegrationEvents.Events;
+using Microsoft.Data.SqlClient;
 using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,8 +38,8 @@ namespace Coupon.API.Extensions
             using (var scope = host.Services.CreateScope())
             {
                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-
-                eventBus.Subscribe<OrderStatusChangedToAwaitingCouponValidationIntegrationEvent, OrderStatusChangedToAwaitingCouponValidationIntegrationEventHandler>();
+                eventBus.Subscribe<OrderStatusChangedToAwaitingCouponValidationIntegrationEvent, IIntegrationEventHandler<OrderStatusChangedToAwaitingCouponValidationIntegrationEvent>>();
+                eventBus.Subscribe<OrderStatusChangedToCancelledIntegrationEvent, IIntegrationEventHandler<OrderStatusChangedToCancelledIntegrationEvent>>();
             }
 
             return host;

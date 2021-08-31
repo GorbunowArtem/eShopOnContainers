@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Coupon.API.Infrastructure.Models;
-    using Coupon.API.Infrastructure.Repositories;
+    using Models;
+    using Repositories;
 
     public class CouponSeed
     {

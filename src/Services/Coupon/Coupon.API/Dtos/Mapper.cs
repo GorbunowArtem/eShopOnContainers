@@ -1,6 +1,6 @@
 ﻿namespace Coupon.API.Dtos
 {
-    using Coupon.API.Infrastructure.Models;
+    using Infrastructure.Models;
 
     public class Mapper : IMapper<CouponDto, Coupon>
     {

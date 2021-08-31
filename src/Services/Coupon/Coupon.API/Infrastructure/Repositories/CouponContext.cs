@@ -1,6 +1,6 @@
 ﻿namespace Coupon.API.Infrastructure.Repositories
 {
-    using Coupon.API.Infrastructure.Models;
+    using Models;
     using Microsoft.Extensions.Options;
     using MongoDB.Driver;
 

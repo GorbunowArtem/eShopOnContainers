@@ -1,7 +1,7 @@
 ﻿namespace Coupon.API.Infrastructure.Repositories
 {
     using System.Threading.Tasks;
-    using Coupon.API.Infrastructure.Models;
+    using Models;
 
     public interface ICouponRepository
     {
