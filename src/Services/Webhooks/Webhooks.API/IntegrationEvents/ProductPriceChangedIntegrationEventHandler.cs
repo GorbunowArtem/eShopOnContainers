@@ -7,7 +7,6 @@ namespace Webhooks.API.IntegrationEvents
     {
         public async Task Handle(ProductPriceChangedIntegrationEvent @event)
         {
-            int i = 0;
         }
     }
 }
