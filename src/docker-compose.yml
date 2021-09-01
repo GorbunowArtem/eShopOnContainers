@@ -157,5 +157,11 @@ services:
     depends_on:
       - webhooks-api
 
+  ordering.backgroundtasks:
+    image: ${REGISTRY:-eshop}/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest}
+    
+  basket.data:
+    image: ${REGISTRY:-eshop}/basket.data:${PLATFORM:-linux}-${TAG:-latest}
+    
   webshoppingapigw:
     image: envoyproxy/envoy:v1.11.1
