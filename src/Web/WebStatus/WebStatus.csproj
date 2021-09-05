@@ -3,6 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
