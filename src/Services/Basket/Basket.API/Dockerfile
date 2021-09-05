@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /src
 
 # It's important to keep lines from here down to "COPY . ." identical in all Dockerfiles
@@ -44,6 +44,7 @@ COPY "Web/WebStatus/WebStatus.csproj" "Web/WebStatus/WebStatus.csproj"
 COPY "docker-compose.dcproj" "docker-compose.dcproj"
 
 COPY "NuGet.config" "/root/.nuget/NuGet.config"
+#COPY "NuGet.config" "NuGet.config"
 
 RUN dotnet restore "eShopOnContainers-ServicesAndWebApps.sln"
 

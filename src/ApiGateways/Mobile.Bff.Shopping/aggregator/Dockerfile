@@ -50,7 +50,7 @@ RUN dotnet restore "eShopOnContainers-ServicesAndWebApps.sln"
 
 COPY . .
 WORKDIR /src/ApiGateways/Mobile.Bff.Shopping/aggregator
-RUN dotnet publish --no-restore -c Release -o /app
+RUN dotnet publish -c Release -o /app
 
 FROM build AS publish
 
