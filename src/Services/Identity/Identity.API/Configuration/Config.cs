@@ -6,6 +6,8 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
 {
     public class Config
     {
+        private const string CouponsApiName = "coupons";
+
         // ApiResources define the apis in your system
         public static IEnumerable<ApiResource> GetApis()
         {
@@ -17,6 +19,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                 new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
                 new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
                 new ApiResource("webhooks", "Webhooks registration Service"),
+                new ApiResource(CouponsApiName, "Coupon Service"),
             };
         }
 
@@ -55,7 +58,8 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket",
                         "webshoppingagg",
                         "orders.signalrhub",
-                        "webhooks"
+                        "webhooks",
+                        CouponsApiName
                     },
                 },
                 new Client
@@ -80,6 +84,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "orders",
                         "basket",
+                        CouponsApiName,
                         "mobileshoppingagg",
                         "webhooks"
                     },
@@ -118,7 +123,8 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket",
                         "webshoppingagg",
                         "orders.signalrhub",
-                        "webhooks"
+                        "webhooks"  ,
+                        CouponsApiName
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
@@ -184,7 +190,8 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "orders",
                         "basket",
                         "webshoppingagg",
-                        "webhooks"
+                        "webhooks",
+                        CouponsApiName
                     },
                 },
                 new Client
@@ -262,7 +269,20 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                     {
                         "webhooks"
                     }
-                }
+                },
+                new Client
+                {
+                    ClientId = "couponswaggerui",
+                    ClientName = "Coupon Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientsUrl["CouponApi"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["CouponApi"]}/swagger/" },
+                    AllowedScopes =
+                    {
+                        CouponsApiName
+                    }
+                },
             };
         }
     }

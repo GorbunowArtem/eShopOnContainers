@@ -55,6 +55,7 @@ services:
       - UseCustomizationData=True
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - CouponApiClient=http://${ESHOP_PROD_EXTERNAL_DNS_NAME_OR_IP}:5115
     ports:
       - "5105:80"
 
@@ -334,7 +335,7 @@ services:
       - PATH_BASE=/coupon-api
       - PORT=80
     ports :
-      - "55106:80"
+      - "5115:80"
 
 volumes:
   eshop-sqldata:
