@@ -15,7 +15,7 @@ services:
     image: redis:alpine
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq
 
   identity-api:
     image: ${REGISTRY:-eshop}/identity.api:${PLATFORM:-linux}-${TAG:-latest}
@@ -162,3 +162,12 @@ services:
    
   webshoppingapigw:
     image: envoyproxy/envoy:v1.11.1
+    
+  coupon-api:
+    image: ${REGISTRY:-eshop}/coupon.api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Coupon/Coupon.API/Dockerfile
+    depends_on:
+      - rabbitmq
+      - nosqldata

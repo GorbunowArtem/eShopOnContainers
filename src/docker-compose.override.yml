@@ -216,11 +216,13 @@ services:
       - urls__grpcBasket=http://basket-api:81
       - urls__grpcCatalog=http://catalog-api:81
       - urls__grpcOrdering=http://ordering-api:81
+      - urls__coupons=http://coupon-api
       - CatalogUrlHC=http://catalog-api/hc
       - OrderingUrlHC=http://ordering-api/hc
       - IdentityUrlHC=http://identity-api/hc
       - BasketUrlHC=http://basket-api/hc
       - PaymentUrlHC=http://payment-api/hc
+      - CouponUrlHC=http://coupon-api/hc
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
     ports:
       - "5121:80"
@@ -309,6 +311,31 @@ services:
       - SelfUrl=http://webhooks-client/
     ports:
       - "5114:80"
+
+  coupon-api :
+    environment :
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionString=mongodb://nosqldata
+#      -  ConnectionString=${ESHOP_AZURE_IDENTITY_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Service.IdentityDb;User Id=sa;Password=Pass@word}
+      - identityUrl=http://identity-api
+      - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - UseCustomizationData=True
+      - AzureServiceBusEnabled=False
+      - CheckUpdateTime=30000
+      - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+      - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - UseLoadTest=${USE_LOADTEST:-False}
+      - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
+      - Serilog__MinimumLevel__Override__coupon-api=Verbose
+      - PATH_BASE=/coupon-api
+      - PORT=80
+    ports :
+      - "55106:80"
+
 volumes:
   eshop-sqldata:
     external: false
