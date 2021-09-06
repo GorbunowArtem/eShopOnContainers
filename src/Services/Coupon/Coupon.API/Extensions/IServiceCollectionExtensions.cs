@@ -218,7 +218,7 @@
             {
                 options.Authority = configuration["IdentityUrl"];
                 options.RequireHttpsMetadata = false;
-                options.Audience = "coupon";
+                options.Audience = "coupons";
             }).Services;
         }
 
