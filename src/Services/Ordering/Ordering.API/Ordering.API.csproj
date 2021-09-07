@@ -74,4 +74,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Infrastructure\Migrations\20200317130640_AddCouponCodeMigration.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200317130640_AddCouponCodeMigration.Designer.cs" />
+  </ItemGroup>
+
 </Project>
