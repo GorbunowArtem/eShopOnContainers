@@ -15,7 +15,7 @@ services:
     image: redis:alpine
 
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3-management
 
   identity-api:
     image: ${REGISTRY:-eshop}/identity.api:${PLATFORM:-linux}-${TAG:-latest}
@@ -77,23 +77,23 @@ services:
       dockerfile: Services/Webhooks/Webhooks.API/Dockerfile
     depends_on:
       - sqldata
-
-  mobileshoppingapigw:
-    image: envoyproxy/envoy:v1.11.1
-
-  mobileshoppingagg:
-    image: ${REGISTRY:-eshop}/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: ApiGateways/Mobile.Bff.Shopping/aggregator/Dockerfile
-    depends_on:
-      - nosqldata
-      - sqldata
-      - identity-api
-      - rabbitmq
-      - ordering-api
-      - catalog-api
-      - basket-api
+#
+#  mobileshoppingapigw:
+#    image: envoyproxy/envoy:v1.11.1
+#
+#  mobileshoppingagg:
+#    image: ${REGISTRY:-eshop}/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
+#    build:
+#      context: .
+#      dockerfile: ApiGateways/Mobile.Bff.Shopping/aggregator/Dockerfile
+#    depends_on:
+#      - nosqldata
+#      - sqldata
+#      - identity-api
+#      - rabbitmq
+#      - ordering-api
+#      - catalog-api
+#      - basket-api
 
   webshoppingagg:
     image: ${REGISTRY:-eshop}/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
@@ -139,15 +139,15 @@ services:
     depends_on:
       - webshoppingagg
       - webshoppingapigw
-
-  webmvc:
-    image: ${REGISTRY:-eshop}/webmvc:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Web/WebMVC/Dockerfile
-    depends_on:
-      - webshoppingagg
-      - webshoppingapigw
+#
+#  webmvc:
+#    image: ${REGISTRY:-eshop}/webmvc:${PLATFORM:-linux}-${TAG:-latest}
+#    build:
+#      context: .
+#      dockerfile: Web/WebMVC/Dockerfile
+#    depends_on:
+#      - webshoppingagg
+#      - webshoppingapigw
 
   webhooks-client:
     image: ${REGISTRY:-eshop}/webhooks.client:${PLATFORM:-linux}-${TAG:-latest}
