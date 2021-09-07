@@ -1,4 +1,6 @@
-﻿namespace Ordering.API.Application.DomainEventHandlers.OrderStockConfirmed
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Ordering.API.Application.DomainEventHandlers.OrderStockConfirmed
 {
     using Domain.Events;
     using MediatR;

@@ -8,6 +8,7 @@ using Ordering.Domain.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace Ordering.API.Application.DomainEventHandlers.OrderCancelled
 {

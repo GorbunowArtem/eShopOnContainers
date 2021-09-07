@@ -1,5 +1,6 @@
 ﻿using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.OrderAggregate;
 using System;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace UnitTest.Ordering
 {
@@ -25,7 +26,9 @@ namespace UnitTest.Ordering
                 cardNumber: "12",
                 cardSecurityNumber: "123",
                 cardHolderName: "name",
-                cardExpiration: DateTime.UtcNow);
+                cardExpiration: DateTime.UtcNow,
+                discountCode: "DISC-5",
+                discount: 5m);
         }
 
         public OrderBuilder AddOne(

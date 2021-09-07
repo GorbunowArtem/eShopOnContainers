@@ -1,4 +1,6 @@
-﻿namespace Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure
 {
     using global::Ordering.API.Extensions;
     using Microsoft.AspNetCore.Hosting;
@@ -146,7 +148,7 @@
             return new List<OrderStatus>()
             {
                 OrderStatus.Submitted,
-                OrderStatus.AwaitingValidation,
+                OrderStatus.AwaitingCouponValidation,
                 OrderStatus.StockConfirmed,
                 OrderStatus.Paid,
                 OrderStatus.Shipped,

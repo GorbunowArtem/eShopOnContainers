@@ -6,6 +6,8 @@ using Moq;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 
 namespace UnitTest.Ordering.Application
@@ -23,10 +25,11 @@ namespace UnitTest.Ordering.Application
         private readonly Mock<IIdentityService> _identityServiceMock;
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IOrderingIntegrationEventService> _orderingIntegrationEventService;
+        private readonly Fixture _fixture;
 
         public NewOrderRequestHandlerTest()
         {
-
+            _fixture = new Fixture();
             _orderRepositoryMock = new Mock<IOrderRepository>();
             _identityServiceMock = new Mock<IIdentityService>();
             _orderingIntegrationEventService = new Mock<IOrderingIntegrationEventService>();
@@ -73,7 +76,7 @@ namespace UnitTest.Ordering.Application
 
         private Order FakeOrder()
         {
-            return new Order("1", "fakeName", new Address("street", "city", "state", "country", "zipcode"), 1, "12", "111", "fakeName", DateTime.Now.AddYears(1));
+            return _fixture.Create<Order>();
         }
 
         private CreateOrderCommand FakeOrderRequestWithBuyer(Dictionary<string, object> args = null)
@@ -91,7 +94,9 @@ namespace UnitTest.Ordering.Application
                 cardExpiration: args != null && args.ContainsKey("cardExpiration") ? (DateTime)args["cardExpiration"] : DateTime.MinValue,
                 cardSecurityNumber: args != null && args.ContainsKey("cardSecurityNumber") ? (string)args["cardSecurityNumber"] : "123",
                 cardHolderName: args != null && args.ContainsKey("cardHolderName") ? (string)args["cardHolderName"] : "XXX",
-                cardTypeId: args != null && args.ContainsKey("cardTypeId") ? (int)args["cardTypeId"] : 0);
+                cardTypeId: args != null && args.ContainsKey("cardTypeId") ? (int)args["cardTypeId"] : 0,
+                codeDiscount: args != null && args.ContainsKey("codeDiscount") ? (string)args["codeDiscount"] : "",
+                discount: args != null && args.ContainsKey("discount") ? (decimal)args["discount"] : 0);
         }
     }
 }

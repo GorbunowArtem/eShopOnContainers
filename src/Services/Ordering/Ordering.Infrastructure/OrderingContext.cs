@@ -11,6 +11,7 @@ using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace Microsoft.eShopOnContainers.Services.Ordering.Infrastructure
 {

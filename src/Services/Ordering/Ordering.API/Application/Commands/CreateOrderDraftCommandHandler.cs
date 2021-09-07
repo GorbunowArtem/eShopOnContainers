@@ -1,4 +1,6 @@
-﻿namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
 {
     using Domain.AggregatesModel.OrderAggregate;
     using global::Ordering.API.Application.Models;

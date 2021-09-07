@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Microsoft.eShopOnContainers.Services.Ordering.Infrastructure;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace Ordering.Infrastructure.EntityConfigurations
 {

@@ -4,6 +4,7 @@ using Microsoft.eShopOnContainers.Services.Ordering.Domain.Seedwork;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace Microsoft.eShopOnContainers.Services.Ordering.Infrastructure.Repositories
 {

@@ -4,6 +4,7 @@ using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.Buyer
 using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Microsoft.eShopOnContainers.Services.Ordering.Infrastructure;
 using System;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
 namespace Ordering.Infrastructure.EntityConfigurations
 {

@@ -1,4 +1,6 @@
-﻿namespace Ordering.API.Application.DomainEventHandlers.OrderGracePeriodConfirmed
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Ordering.API.Application.DomainEventHandlers.OrderGracePeriodConfirmed
 {
     using Domain.Events;
     using MediatR;
@@ -35,7 +37,7 @@
         {
             _logger.CreateLogger<OrderStatusChangedToAwaitingValidationDomainEvent>()
                 .LogTrace("Order with Id: {OrderId} has been successfully updated to status {Status} ({Id})",
-                    orderStatusChangedToAwaitingValidationDomainEvent.OrderId, nameof(OrderStatus.AwaitingValidation), OrderStatus.AwaitingValidation.Id);
+                    orderStatusChangedToAwaitingValidationDomainEvent.OrderId, nameof(OrderStatus.AwaitingCouponValidation), OrderStatus.AwaitingCouponValidation.Id);
 
             var order = await _orderRepository.GetAsync(orderStatusChangedToAwaitingValidationDomainEvent.OrderId);
 

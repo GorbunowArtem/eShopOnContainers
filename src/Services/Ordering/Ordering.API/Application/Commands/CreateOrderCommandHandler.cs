@@ -1,5 +1,10 @@
-﻿namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Domain.AggregatesModel.OrderAggregate;
     using global::Ordering.API.Application.IntegrationEvents;
     using global::Ordering.API.Application.IntegrationEvents.Events;
@@ -7,9 +12,6 @@
     using Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure.Services;
     using Microsoft.eShopOnContainers.Services.Ordering.Infrastructure.Idempotency;
     using Microsoft.Extensions.Logging;
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     // Regular CommandHandler
     public class CreateOrderCommandHandler
@@ -46,7 +48,9 @@
             // methods and constructor so validations, invariants and business logic 
             // make sure that consistency is preserved across the whole aggregate
             var address = new Address(message.Street, message.City, message.State, message.Country, message.ZipCode);
-            var order = new Order(message.UserId, message.UserName, address, message.CardTypeId, message.CardNumber, message.CardSecurityNumber, message.CardHolderName, message.CardExpiration);
+            var order = new Order(message.UserId, message.UserName, address, message.CardTypeId, message.CardNumber,
+                                  message.CardSecurityNumber, message.CardHolderName, message.CardExpiration,
+                                  message.CodeDiscount, message.Discount);
 
             foreach (var item in message.OrderItems)
             {

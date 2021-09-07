@@ -1,4 +1,6 @@
-﻿namespace Ordering.API.Application.DomainEventHandlers.OrderPaid
+﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+
+namespace Ordering.API.Application.DomainEventHandlers.OrderPaid
 {
     using Domain.Events;
     using MediatR;

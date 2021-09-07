@@ -2,13 +2,19 @@
 using Ordering.Domain.Events;
 using Ordering.Domain.Exceptions;
 using System;
+using AutoFixture;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 using UnitTest.Ordering;
 using Xunit;
 
 public class OrderAggregateTest
 {
+    private readonly Fixture _fixture;
+
     public OrderAggregateTest()
-    { }
+    {
+        _fixture = new Fixture();
+    }
 
     [Fact]
     public void Create_order_item_success()
@@ -120,60 +126,56 @@ public class OrderAggregateTest
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
         var cardExpiration = DateTime.Now.AddYears(1);
-        var expectedResult = 1;
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+        var fakeOrder = new Order("1",
+            "fakeName",
+            new Address(street,
+                city,
+                state,
+                country,
+                zipcode),
+            cardTypeId,
+            cardNumber,
+            cardSecurityNumber,
+            cardHolderName,
+            cardExpiration,
+            "DISC-5",
+            12m);
 
         //Assert
-        Assert.Equal(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.Equal(fakeOrder.DomainEvents.Count, 1);
     }
 
     [Fact]
     public void Add_event_Order_explicitly_raises_new_event()
     {
         //Arrange   
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.Now.AddYears(1);
-        var expectedResult = 2;
+        var fakeOrder = _fixture.Create<Order>();
 
         //Act 
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder, "fakeName", "1", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration));
+        fakeOrder.AddDomainEvent(_fixture.Build<OrderStartedDomainEvent>()
+            .With(os => os.Order, fakeOrder)
+            .Create());
+        
         //Assert
-        Assert.Equal(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.Equal(2, fakeOrder.DomainEvents.Count);
     }
 
     [Fact]
     public void Remove_event_Order_explicitly()
     {
         //Arrange    
-        var street = "fakeStreet";
-        var city = "FakeCity";
-        var state = "fakeState";
-        var country = "fakeCountry";
-        var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
-        var cardNumber = "12";
-        var cardSecurityNumber = "123";
-        var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.Now.AddYears(1);
-        var fakeOrder = new Order("1", "fakeName", new Address(street, city, state, country, zipcode), cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder, "1", "fakeName", cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
-        var expectedResult = 1;
+        var fakeOrder = _fixture.Create<Order>();
+        var @fakeEvent = _fixture.Build<OrderStartedDomainEvent>()
+            .With(o => o.Order, fakeOrder)
+            .Create();
 
         //Act         
         fakeOrder.AddDomainEvent(@fakeEvent);
         fakeOrder.RemoveDomainEvent(@fakeEvent);
+        
         //Assert
-        Assert.Equal(fakeOrder.DomainEvents.Count, expectedResult);
+        Assert.Equal(1, fakeOrder.DomainEvents.Count);
     }
 }

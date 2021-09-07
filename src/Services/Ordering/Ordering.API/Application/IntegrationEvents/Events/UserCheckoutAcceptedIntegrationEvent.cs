@@ -1,19 +1,19 @@
-﻿using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Events;
+﻿using System;
+using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Events;
 using Ordering.API.Application.Models;
-using System;
 
 namespace Ordering.API.Application.IntegrationEvents.Events
 {
     public record UserCheckoutAcceptedIntegrationEvent : IntegrationEvent
-    {        
+    {
         public string UserId { get; }
-        
+
         public string UserName { get; }
-        
+
         public string City { get; set; }
-        
+
         public string Street { get; set; }
-        
+
         public string State { get; set; }
 
         public string Country { get; set; }
@@ -36,10 +36,14 @@ namespace Ordering.API.Application.IntegrationEvents.Events
 
         public CustomerBasket Basket { get; }
 
+        public string CodeDiscount { get; set; }
+
+        public int Discount { get; set; }
+
         public UserCheckoutAcceptedIntegrationEvent(string userId, string userName, string city, string street,
             string state, string country, string zipCode, string cardNumber, string cardHolderName,
             DateTime cardExpiration, string cardSecurityNumber, int cardTypeId, string buyer, Guid requestId,
-            CustomerBasket basket)
+            CustomerBasket basket, string codeDiscount, int discount)
         {
             UserId = userId;
             City = city;
@@ -56,6 +60,8 @@ namespace Ordering.API.Application.IntegrationEvents.Events
             Basket = basket;
             RequestId = requestId;
             UserName = userName;
+            CodeDiscount = codeDiscount;
+            Discount = discount;
         }
 
     }

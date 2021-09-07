@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Ordering.API.Application.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using MediatR;
+using Ordering.API.Application.Models;
 
 namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
 {
@@ -60,6 +60,12 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
         public int CardTypeId { get; private set; }
 
         [DataMember]
+        public string CodeDiscount { get; private set; }
+
+        [DataMember]
+        public decimal Discount { get; private set; }
+
+        [DataMember]
         public IEnumerable<OrderItemDTO> OrderItems => _orderItems;
 
         public CreateOrderCommand()
@@ -69,7 +75,7 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
 
         public CreateOrderCommand(List<BasketItem> basketItems, string userId, string userName, string city, string street, string state, string country, string zipcode,
             string cardNumber, string cardHolderName, DateTime cardExpiration,
-            string cardSecurityNumber, int cardTypeId) : this()
+            string cardSecurityNumber, int cardTypeId, string codeDiscount, decimal discount) : this()
         {
             _orderItems = basketItems.ToOrderItemsDTO().ToList();
             UserId = userId;
@@ -85,22 +91,24 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.API.Application.Commands
             CardSecurityNumber = cardSecurityNumber;
             CardTypeId = cardTypeId;
             CardExpiration = cardExpiration;
+            CodeDiscount = codeDiscount;
+            Discount = discount;
         }
 
 
-        public record OrderItemDTO
+        public class OrderItemDTO
         {
-            public int ProductId { get; init; }
+            public int ProductId { get; set; }
 
-            public string ProductName { get; init; }
+            public string ProductName { get; set; }
 
-            public decimal UnitPrice { get; init; }
+            public decimal UnitPrice { get; set; }
 
-            public decimal Discount { get; init; }
+            public decimal Discount { get; set; }
 
-            public int Units { get; init; }
+            public int Units { get; set; }
 
-            public string PictureUrl { get; init; }
+            public string PictureUrl { get; set; }
         }
     }
 }

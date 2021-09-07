@@ -1,9 +1,10 @@
-﻿using Microsoft.eShopOnContainers.Services.Ordering.Domain.Seedwork;
-using Ordering.Domain.Events;
-using Ordering.Domain.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.eShopOnContainers.Services.Ordering.Domain.Seedwork;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
+using Ordering.Domain.Events;
+using Ordering.Domain.Exceptions;
 
 namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.OrderAggregate
 {
@@ -22,14 +23,21 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
         private int? _buyerId;
 
         public OrderStatus OrderStatus { get; private set; }
+
+        public bool? DiscountConfirmed { get; private set; }
+
         private int _orderStatusId;
 
         private string _description;
 
+        public string DiscountCode { get; private set; }
 
+        public decimal? Discount { get; private set; }
 
         // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
+#pragma warning disable CS0414
         private bool _isDraft;
+#pragma warning restore CS0414
 
         // DDD Patterns comment
         // Using a private collection field, better for DDD Aggregate's encapsulation
@@ -54,13 +62,15 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
         }
 
         public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
-                string cardHolderName, DateTime cardExpiration, int? buyerId = null, int? paymentMethodId = null) : this()
+                string cardHolderName, DateTime cardExpiration, string discountCode, decimal? discount, int? buyerId = null, int? paymentMethodId = null) : this()
         {
             _buyerId = buyerId;
             _paymentMethodId = paymentMethodId;
             _orderStatusId = OrderStatus.Submitted.Id;
             _orderDate = DateTime.UtcNow;
             Address = address;
+            DiscountCode = discountCode;
+            Discount = discountCode == null ? null : discount;
 
             // Add the OrderStarterDomainEvent to the domain events collection 
             // to be raised/dispatched when comitting changes into the Database [ After DbContext.SaveChanges() ]
@@ -107,35 +117,73 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
             _buyerId = id;
         }
 
-        public void SetAwaitingValidationStatus()
+        public void SetAwaitingStockValidationStatus()
         {
-            if (_orderStatusId == OrderStatus.Submitted.Id)
+            if (_orderStatusId != OrderStatus.Submitted.Id)
             {
-                AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
-                _orderStatusId = OrderStatus.AwaitingValidation.Id;
+                StatusChangeException(OrderStatus.AwaitingStockValidation);
+            }
+
+            _orderStatusId = OrderStatus.AwaitingStockValidation.Id;
+
+            AddDomainEvent(new OrderStatusChangedToAwaitingStockValidationDomainEvent(Id, _orderItems));
+        }
+
+        public void ProcessStockConfirmed()
+        {
+            // If there's no Couponm, then it's validated
+            if (DiscountCode == null)
+            {
+                if (_orderStatusId != OrderStatus.AwaitingStockValidation.Id)
+                {
+                    StatusChangeException(OrderStatus.Validated);
+                }
+
+                _orderStatusId = OrderStatus.Validated.Id;
+                _description = "All the items were confirmed with available stock.";
+
+                AddDomainEvent(new OrderStatusChangedToValidatedDomainEvent(Id));
+            }
+            else
+            {
+                if (_orderStatusId != OrderStatus.AwaitingStockValidation.Id)
+                {
+                    StatusChangeException(OrderStatus.AwaitingCouponValidation);
+                }
+
+                _orderStatusId = OrderStatus.AwaitingCouponValidation.Id;
+                _description = "Validate discount code";
+
+                AddDomainEvent(new OrderStatusChangedToAwaitingCouponValidationDomainEvent(Id, DiscountCode));
             }
         }
 
-        public void SetStockConfirmedStatus()
+        public void ProcessCouponConfirmed()
         {
-            if (_orderStatusId == OrderStatus.AwaitingValidation.Id)
+            if (_orderStatusId != OrderStatus.AwaitingCouponValidation.Id)
             {
-                AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
-
-                _orderStatusId = OrderStatus.StockConfirmed.Id;
-                _description = "All the items were confirmed with available stock.";
+                StatusChangeException(OrderStatus.Validated);
             }
+
+            DiscountConfirmed = true;
+
+            _orderStatusId = OrderStatus.Validated.Id;
+            _description = "Discount coupon validated.";
+
+            AddDomainEvent(new OrderStatusChangedToValidatedDomainEvent(Id));
         }
 
         public void SetPaidStatus()
         {
-            if (_orderStatusId == OrderStatus.StockConfirmed.Id)
+            if (_orderStatusId != OrderStatus.Validated.Id)
             {
-                AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
-
-                _orderStatusId = OrderStatus.Paid.Id;
-                _description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
+                StatusChangeException(OrderStatus.Paid);
             }
+
+            _orderStatusId = OrderStatus.Paid.Id;
+            _description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
+
+            AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
         }
 
         public void SetShippedStatus()
@@ -147,6 +195,7 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
 
             _orderStatusId = OrderStatus.Shipped.Id;
             _description = "The order was shipped.";
+
             AddDomainEvent(new OrderShippedDomainEvent(this));
         }
 
@@ -160,12 +209,13 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
 
             _orderStatusId = OrderStatus.Cancelled.Id;
             _description = $"The order was cancelled.";
+
             AddDomainEvent(new OrderCancelledDomainEvent(this));
         }
 
         public void SetCancelledStatusWhenStockIsRejected(IEnumerable<int> orderStockRejectedItems)
         {
-            if (_orderStatusId == OrderStatus.AwaitingValidation.Id)
+            if (_orderStatusId == OrderStatus.AwaitingStockValidation.Id)
             {
                 _orderStatusId = OrderStatus.Cancelled.Id;
 
@@ -190,12 +240,24 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
 
         private void StatusChangeException(OrderStatus orderStatusToChange)
         {
-            throw new OrderingDomainException($"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
+            throw new OrderingDomainException($"It isn't possible to change the status for order \"{Id}\" from \"{OrderStatus.Name}\" to \"{orderStatusToChange.Name}\"!");
         }
 
         public decimal GetTotal()
         {
-            return _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice());
+            var result = _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice()) - (Discount ?? 0);
+
+            return result < 0 ? 0 : result;
+        }
+
+        public void SetStockConfirmedStatus()
+        {
+            _orderStatusId = OrderStatus.StockConfirmed.Id;
+        }
+
+        public void SetAwaitingValidationStatus()
+        {
+            _orderStatusId = OrderStatus.AwaitingCouponValidation.Id;
         }
     }
 }
