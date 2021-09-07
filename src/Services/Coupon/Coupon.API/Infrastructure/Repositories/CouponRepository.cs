@@ -15,7 +15,7 @@
 
         public async Task UpdateCouponConsumedByCodeAsync(string code, int orderId)
         {
-            var filter = Builders<Coupon>.Filter.Eq("Code", code);
+            var filter = Builders<Coupon>.Filter.Eq(c => c.Code, code);
             var update = Builders<Coupon>.Update
                 .Set(coupon => coupon.Consumed, true)
                 .Set(coupon => coupon.OrderId, orderId);
@@ -25,7 +25,7 @@
 
         public async Task UpdateCouponReleasedByOrderIdAsync(int orderId)
         {
-            var filter = Builders<Coupon>.Filter.Eq("OrderId", orderId);
+            var filter = Builders<Coupon>.Filter.Eq(c => c.OrderId, orderId);
             var update = Builders<Coupon>.Update
                 .Set(coupon => coupon.Consumed, false)
                 .Set(coupon => coupon.OrderId, 0);
@@ -35,7 +35,7 @@
 
         public async Task<Coupon> FindCouponByCodeAsync(string code)
         {
-            var filter = Builders<Coupon>.Filter.Eq("Code", code);
+            var filter = Builders<Coupon>.Filter.Eq(c => c.Code, code);
             return await _couponContext.Coupons.Find(filter).FirstOrDefaultAsync();
         }
     }

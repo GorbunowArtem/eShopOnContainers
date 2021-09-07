@@ -1,9 +1,6 @@
 import {IOrderItem} from './orderItem.model';
 
 export interface IOrderDetail {
-    subtotal: number;
-    coupon: string;
-    discount: number;
     ordernumber: string;
     status: string;
     description: string;
@@ -13,6 +10,9 @@ export interface IOrderDetail {
     state: string;
     zipcode: string;
     country: number;
+    subtotal: number;
+    coupon: string;
+    discount: number;
     total: number;
     orderitems: IOrderItem[];
 }
