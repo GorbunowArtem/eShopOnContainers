@@ -101,7 +101,7 @@ public class OrderAggregateTest
     }
 
     [Fact]
-    public void when_add_two_times_on_the_same_item_then_the_total_of_order_should_be_the_sum_of_the_two_items()
+    public void when_add_two_times_on_the_same_item_then_the_total_of_order_should_be_the_sum_of_the_two_items_eith_discount()
     {
         var address = new AddressBuilder().Build();
         var order = new OrderBuilder(address)
@@ -109,7 +109,7 @@ public class OrderAggregateTest
             .AddOne(1, "cup", 10.0m, 0, string.Empty)
             .Build();
 
-        Assert.Equal(20.0m, order.GetTotal());
+        Assert.Equal(15.0m, order.GetTotal());
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class OrderAggregateTest
             cardHolderName,
             cardExpiration,
             "DISC-5",
-            12m);
+            0m);
 
         //Assert
         Assert.Equal(fakeOrder.DomainEvents.Count, 1);
@@ -154,9 +154,14 @@ public class OrderAggregateTest
         var fakeOrder = _fixture.Create<Order>();
 
         //Act 
-        fakeOrder.AddDomainEvent(_fixture.Build<OrderStartedDomainEvent>()
-            .With(os => os.Order, fakeOrder)
-            .Create());
+        fakeOrder.AddDomainEvent(new OrderStartedDomainEvent(fakeOrder,
+            "id",
+            "userName",
+            22,
+            "sf",
+            "3r",
+            "holder",
+            DateTime.Now));
         
         //Assert
         Assert.Equal(2, fakeOrder.DomainEvents.Count);
@@ -167,9 +172,14 @@ public class OrderAggregateTest
     {
         //Arrange    
         var fakeOrder = _fixture.Create<Order>();
-        var @fakeEvent = _fixture.Build<OrderStartedDomainEvent>()
-            .With(o => o.Order, fakeOrder)
-            .Create();
+        var @fakeEvent = new OrderStartedDomainEvent(fakeOrder,
+            "id",
+            "userName",
+            22,
+            "sf",
+            "3r",
+            "holder",
+            DateTime.Now);
 
         //Act         
         fakeOrder.AddDomainEvent(@fakeEvent);
