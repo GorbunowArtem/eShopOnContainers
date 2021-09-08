@@ -1,6 +1,7 @@
-﻿using Ordering.Domain.AggregatesModel.OrderAggregate;
+﻿using Ordering.API.Application.IntegrationEvents.Events;
+using Ordering.Domain.AggregatesModel.OrderAggregate;
 
-namespace Ordering.API.Application.DomainEventHandlers.OrderStockConfirmed
+namespace Ordering.API.Application.DomainEventHandlers.OrderValidated
 {
     using Domain.Events;
     using MediatR;
@@ -8,20 +9,19 @@ namespace Ordering.API.Application.DomainEventHandlers.OrderStockConfirmed
     using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.OrderAggregate;
     using Microsoft.Extensions.Logging;
     using Ordering.API.Application.IntegrationEvents;
-    using Ordering.API.Application.IntegrationEvents.Events;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class OrderStatusChangedToStockConfirmedDomainEventHandler
-                   : INotificationHandler<OrderStatusChangedToStockConfirmedDomainEvent>
+    public class OrderStatusChangedToValidatedDomainEventHandler
+        : INotificationHandler<OrderStatusChangedToValidatedDomainEvent>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IBuyerRepository _buyerRepository;
         private readonly ILoggerFactory _logger;
         private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
 
-        public OrderStatusChangedToStockConfirmedDomainEventHandler(
+        public OrderStatusChangedToValidatedDomainEventHandler(
             IOrderRepository orderRepository,
             IBuyerRepository buyerRepository,
             ILoggerFactory logger,
@@ -33,17 +33,17 @@ namespace Ordering.API.Application.DomainEventHandlers.OrderStockConfirmed
             _orderingIntegrationEventService = orderingIntegrationEventService;
         }
 
-        public async Task Handle(OrderStatusChangedToStockConfirmedDomainEvent orderStatusChangedToStockConfirmedDomainEvent, CancellationToken cancellationToken)
+        public async Task Handle(OrderStatusChangedToValidatedDomainEvent domainEvent, CancellationToken cancellationToken)
         {
-            _logger.CreateLogger<OrderStatusChangedToStockConfirmedDomainEventHandler>()
+            _logger.CreateLogger<OrderStatusChangedToValidatedDomainEventHandler>()
                 .LogTrace("Order with Id: {OrderId} has been successfully updated to status {Status} ({Id})",
-                    orderStatusChangedToStockConfirmedDomainEvent.OrderId, nameof(OrderStatus.StockConfirmed), OrderStatus.StockConfirmed.Id);
+                    domainEvent.OrderId, nameof(OrderStatus.Validated), OrderStatus.Validated.Id);
 
-            var order = await _orderRepository.GetAsync(orderStatusChangedToStockConfirmedDomainEvent.OrderId);
+            var order = await _orderRepository.GetAsync(domainEvent.OrderId);
             var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value.ToString());
 
-            var orderStatusChangedToStockConfirmedIntegrationEvent = new OrderStatusChangedToStockConfirmedIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name, order.GetTotal());
-            await _orderingIntegrationEventService.AddAndSaveEventAsync(orderStatusChangedToStockConfirmedIntegrationEvent);
+            var integrationEvent = new OrderStatusChangedToStockConfirmedIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name, order.GetTotal());
+            await _orderingIntegrationEventService.AddAndSaveEventAsync(integrationEvent);
         }
     }
 }

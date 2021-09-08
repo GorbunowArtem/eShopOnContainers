@@ -120,7 +120,7 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure
                 csvheaders = GetHeaders(requiredHeaders, csvFileOrderStatus);
             }
             catch (Exception ex)
-            {
+            {                       
                 log.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message);
                 return GetPredefinedOrderStatus();
             }
@@ -148,11 +148,13 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure
             return new List<OrderStatus>()
             {
                 OrderStatus.Submitted,
+                OrderStatus.AwaitingStockValidation,
                 OrderStatus.AwaitingCouponValidation,
-                OrderStatus.StockConfirmed,
+                OrderStatus.Validated,
                 OrderStatus.Paid,
                 OrderStatus.Shipped,
-                OrderStatus.Cancelled
+                OrderStatus.Cancelled,
+                OrderStatus.StockConfirmed
             };
         }
 

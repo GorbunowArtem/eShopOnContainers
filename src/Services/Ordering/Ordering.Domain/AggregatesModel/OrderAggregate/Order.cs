@@ -126,7 +126,7 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
 
             _orderStatusId = OrderStatus.AwaitingStockValidation.Id;
 
-            AddDomainEvent(new OrderStatusChangedToAwaitingStockValidationDomainEvent(Id, _orderItems));
+            AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
         }
 
         public void ProcessStockConfirmed()
@@ -248,16 +248,6 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
             var result = _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice()) - (Discount ?? 0);
 
             return result < 0 ? 0 : result;
-        }
-
-        public void SetStockConfirmedStatus()
-        {
-            _orderStatusId = OrderStatus.StockConfirmed.Id;
-        }
-
-        public void SetAwaitingValidationStatus()
-        {
-            _orderStatusId = OrderStatus.AwaitingCouponValidation.Id;
         }
     }
 }
