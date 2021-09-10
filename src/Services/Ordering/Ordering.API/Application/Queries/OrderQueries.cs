@@ -48,13 +48,16 @@
             {
                 connection.Open();
 
-                return await connection.QueryAsync<OrderSummary>(@"SELECT o.[Id] as ordernumber,o.[OrderDate] as [date],os.[Name] as [status], SUM(oi.units*oi.unitprice) as total
+                return await connection.QueryAsync<OrderSummary>(@"SELECT o.[Id] as ordernumber,
+                      o.[OrderDate] as [date],
+                      os.[Name] as [status],
+                    SUM(oi.units*oi.unitprice) - ISNULL(o.Discount, 0) as total
                      FROM [ordering].[Orders] o
                      LEFT JOIN[ordering].[orderitems] oi ON  o.Id = oi.orderid 
                      LEFT JOIN[ordering].[orderstatus] os on o.OrderStatusId = os.Id                     
                      LEFT JOIN[ordering].[buyers] ob on o.BuyerId = ob.Id
                      WHERE ob.IdentityGuid = @userId
-                     GROUP BY o.[Id], o.[OrderDate], os.[Name] 
+                     GROUP BY o.[Id], o.[OrderDate], os.[Name], o.[Discount]
                      ORDER BY o.[Id]", new { userId });
             }
         }
