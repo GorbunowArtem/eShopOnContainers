@@ -8,13 +8,12 @@ namespace Coupon.FunctionalTests
 		[Fact]
 		public async Task ShouldReturnCouponByCode()
 		{
-			using (var server = CreateServer())
-			{
-				var response = await server.CreateClient()
-					.GetAsync("api/v1/coupon/DISC-10");
+			using var server = CreateServer();
+			
+			var response = await server.CreateClient()
+				.GetAsync("api/v1/coupon/DISC-10");
 
-				response.EnsureSuccessStatusCode();
-			}
+			response.EnsureSuccessStatusCode();
 		}
 	}
 }

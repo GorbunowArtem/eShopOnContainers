@@ -23,6 +23,8 @@ namespace Coupon.FunctionalTests
 		{
 		}
 
+		public static string DefaultScheme { get; set; } = "Test";
+
 		protected override Task<AuthenticateResult> HandleAuthenticateAsync()
 		{
 			var claims = new[] { new Claim(ClaimTypes.Name, "Test user") };
@@ -50,9 +52,13 @@ namespace Coupon.FunctionalTests
 				})
 				.ConfigureServices(services =>
 				{
-					services.AddAuthentication("Test")
+					services.AddAuthentication(options =>
+						{
+							options.DefaultAuthenticateScheme = TestAuthHandler.DefaultScheme;
+							options.DefaultScheme = TestAuthHandler.DefaultScheme;
+						})
 						.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-							"Test", options => {});
+							TestAuthHandler.DefaultScheme, options => { });
 				})
 				.UseStartup<Startup>();
 
