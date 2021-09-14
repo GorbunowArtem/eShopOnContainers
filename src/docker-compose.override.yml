@@ -339,6 +339,29 @@ services:
     ports :
       - "5115:80"
 
+  loyalty-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionString=mongodb://nosqldata
+      - identityUrl=http://identity-api
+      - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - UseCustomizationData=True
+      - AzureServiceBusEnabled=False
+      - CheckUpdateTime=30000
+      - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+      - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - UseLoadTest=${USE_LOADTEST:-False}
+      - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
+      - Serilog__MinimumLevel__Override__loyalty-api=Verbose
+      - PATH_BASE=/coupon-api
+      - PORT=80
+    ports :
+      - "5116:80"
+
 volumes:
   eshop-sqldata:
     external: false

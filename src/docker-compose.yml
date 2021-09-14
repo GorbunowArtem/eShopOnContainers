@@ -168,3 +168,6 @@ services:
     depends_on:
       - rabbitmq
       - nosqldata
+        
+  loyalty-api :
+    image : ${REGISTRY:-eshop}/loyalty.api:${PLATFORM:-linux}-${TAG:-latest}
