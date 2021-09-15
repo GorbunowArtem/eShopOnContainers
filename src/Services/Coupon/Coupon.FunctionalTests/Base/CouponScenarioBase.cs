@@ -42,6 +42,7 @@ namespace Coupon.FunctionalTests.Base
 
 
 			var couponContext = testServer.Services.GetService<CouponContext>();
+			
 			couponContext.Coupons.DeleteMany(FilterDefinition<API.Infrastructure.Models.Coupon>.Empty);
 			couponContext.Coupons.InsertMany(new List<API.Infrastructure.Models.Coupon>
 			{

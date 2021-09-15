@@ -24,8 +24,6 @@ namespace Coupon.API.IntegrationEvents.EventHandlers
 
 		public async Task Handle(OrderStatusChangedToAwaitingCouponValidationIntegrationEvent @event)
 		{
-			await Task.Delay(3000);
-
 			using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id}-Coupon.API"))
 			{
 				Log.Information(

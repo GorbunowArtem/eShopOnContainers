@@ -281,3 +281,5 @@ pub/
 src/**/app.yaml
 src/**/inf.yaml
 
+
+coveragereport/

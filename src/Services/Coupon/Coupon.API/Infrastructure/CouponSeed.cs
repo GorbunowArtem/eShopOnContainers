@@ -13,32 +13,32 @@
             {
                 var coupons = new List<Coupon>
                 {
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-5",
                         Discount = 5
                     },
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-10",
                         Discount = 10
                     },
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-15",
                         Discount = 15
                     },
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-20",
                         Discount = 20
                     },
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-25",
                         Discount = 25
                     },
-                    new Coupon
+                    new()
                     {
                         Code = "DISC-30",
                         Discount = 30
