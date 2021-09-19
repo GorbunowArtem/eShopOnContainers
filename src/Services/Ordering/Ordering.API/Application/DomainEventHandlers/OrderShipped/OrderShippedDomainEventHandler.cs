@@ -41,7 +41,13 @@ namespace Ordering.API.Application.DomainEventHandlers.OrderShipped
             var order = await _orderRepository.GetAsync(orderShippedDomainEvent.Order.Id);
             var buyer = await _buyerRepository.FindByIdAsync(order.GetBuyerId.Value.ToString());
 
-            var orderStatusChangedToShippedIntegrationEvent = new OrderStatusChangedToShippedIntegrationEvent(order.Id, order.OrderStatus.Name, buyer.Name);
+            var orderStatusChangedToShippedIntegrationEvent = new OrderStatusChangedToShippedIntegrationEvent(
+                order.Id,
+                order.OrderStatus.Name,
+                buyer.Name,
+                order.GetBuyerId,
+                order.GetTotal());
+            
             await _orderingIntegrationEventService.AddAndSaveEventAsync(orderStatusChangedToShippedIntegrationEvent);
         }
     }
