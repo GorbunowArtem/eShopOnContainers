@@ -7,19 +7,21 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
     public class Config
     {
         private const string CouponsApiName = "coupons";
+        private const string LoyaltyApiName = "loyalty";
 
         // ApiResources define the apis in your system
         public static IEnumerable<ApiResource> GetApis()
         {
             return new List<ApiResource>
             {
-                new ApiResource("orders", "Orders Service"),
-                new ApiResource("basket", "Basket Service"),
-                new ApiResource("mobileshoppingagg", "Mobile Shopping Aggregator"),
-                new ApiResource("webshoppingagg", "Web Shopping Aggregator"),
-                new ApiResource("orders.signalrhub", "Ordering Signalr Hub"),
-                new ApiResource("webhooks", "Webhooks registration Service"),
-                new ApiResource(CouponsApiName, "Coupon Service"),
+                new("orders", "Orders Service"),
+                new("basket", "Basket Service"),
+                new("mobileshoppingagg", "Mobile Shopping Aggregator"),
+                new("webshoppingagg", "Web Shopping Aggregator"),
+                new("orders.signalrhub", "Ordering Signalr Hub"),
+                new("webhooks", "Webhooks registration Service"),
+                new(CouponsApiName, "Coupon Service"),
+                new(LoyaltyApiName, "Loyalty Service"),
             };
         }
 
@@ -40,7 +42,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
             return new List<Client>
             {
                 // JavaScript Client
-                new Client
+                new()
                 {
                     ClientId = "js",
                     ClientName = "eShop SPA OpenId Client",
@@ -59,10 +61,11 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "webshoppingagg",
                         "orders.signalrhub",
                         "webhooks",
-                        CouponsApiName
+                        CouponsApiName,
+                        LoyaltyApiName
                     },
                 },
-                new Client
+                new()
                 {
                     ClientId = "xamarin",
                     ClientName = "eShop Xamarin OpenId Client",
@@ -86,19 +89,20 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket",
                         CouponsApiName,
                         "mobileshoppingagg",
-                        "webhooks"
+                        "webhooks",
+                        LoyaltyApiName
                     },
                     //Allow requesting refresh tokens for long lived API access
                     AllowOfflineAccess = true,
                     AllowAccessTokensViaBrowser = true
                 },
-                new Client
+                new()
                 {
                     ClientId = "mvc",
                     ClientName = "MVC Client",
                     ClientSecrets = new List<Secret>
                     {
-                        new Secret("secret".Sha256())
+                        new("secret".Sha256())
                     },
                     ClientUri = $"{clientsUrl["Mvc"]}",                             // public uri of the client
                     AllowedGrantTypes = GrantTypes.Hybrid,
@@ -124,18 +128,19 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "webshoppingagg",
                         "orders.signalrhub",
                         "webhooks"  ,
-                        CouponsApiName
+                        CouponsApiName,
+                        LoyaltyApiName
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
-                new Client
+                new()
                 {
                     ClientId = "webhooksclient",
                     ClientName = "Webhooks Client",
                     ClientSecrets = new List<Secret>
                     {
-                        new Secret("secret".Sha256())
+                        new("secret".Sha256())
                     },
                     ClientUri = $"{clientsUrl["WebhooksWeb"]}",                             // public uri of the client
                     AllowedGrantTypes = GrantTypes.Hybrid,
@@ -161,13 +166,13 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
-                new Client
+                new()
                 {
                     ClientId = "mvctest",
                     ClientName = "MVC Client Test",
                     ClientSecrets = new List<Secret>
                     {
-                        new Secret("secret".Sha256())
+                        new("secret".Sha256())
                     },
                     ClientUri = $"{clientsUrl["Mvc"]}",                             // public uri of the client
                     AllowedGrantTypes = GrantTypes.Hybrid,
@@ -191,10 +196,11 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket",
                         "webshoppingagg",
                         "webhooks",
-                        CouponsApiName
+                        CouponsApiName,
+                        LoyaltyApiName
                     },
                 },
-                new Client
+                new()
                 {
                     ClientId = "basketswaggerui",
                     ClientName = "Basket Swagger UI",
@@ -209,7 +215,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket"
                     }
                 },
-                new Client
+                new()
                 {
                     ClientId = "orderingswaggerui",
                     ClientName = "Ordering Swagger UI",
@@ -224,7 +230,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "orders"
                     }
                 },
-                new Client
+                new()
                 {
                     ClientId = "mobileshoppingaggswaggerui",
                     ClientName = "Mobile Shopping Aggregattor Swagger UI",
@@ -239,7 +245,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "mobileshoppingagg"
                     }
                 },
-                new Client
+                new()
                 {
                     ClientId = "webshoppingaggswaggerui",
                     ClientName = "Web Shopping Aggregattor Swagger UI",
@@ -255,7 +261,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "basket"
                     }
                 },
-                new Client
+                new()
                 {
                     ClientId = "webhooksswaggerui",
                     ClientName = "WebHooks Service Swagger UI",
@@ -270,7 +276,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                         "webhooks"
                     }
                 },
-                new Client
+                new()
                 {
                     ClientId = "couponswaggerui",
                     ClientName = "Coupon Swagger UI",
@@ -281,6 +287,19 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Configuration
                     AllowedScopes =
                     {
                         CouponsApiName
+                    }
+                },
+                new()
+                {
+                    ClientId = "loyaltywaggerui",
+                    ClientName = "Loyalty Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientsUrl["LoyaltyApi"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["LoyaltyApi"]}/swagger/" },
+                    AllowedScopes =
+                    {
+                        LoyaltyApiName
                     }
                 },
             };
