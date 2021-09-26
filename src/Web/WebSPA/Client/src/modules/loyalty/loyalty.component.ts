@@ -1,16 +1,23 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {LoyaltyService} from "./loyalty.service";
 
 @Component({
-  selector: "app-loyalty",
-  templateUrl: "./loyalty.component.html",
-  styleUrls: ["./loyalty.component.scss"],
+    selector: "app-loyalty",
+    templateUrl: "./loyalty.component.html",
+    styleUrls: ["./loyalty.component.scss"],
 })
 export class LoyaltyComponent implements OnInit {
-  loyaltyPoints: number;
+    loyaltyPoints: number;
 
-  constructor() {
-    this.loyaltyPoints = 0;
-  }
+    constructor(private loyaltyService: LoyaltyService) {
+        this.loyaltyPoints = 0;
+    }
 
-  ngOnInit() {}
+    ngOnInit() {
+        this.loyaltyService.getByBuyerId(1).subscribe((lp: number) => {
+                debugger;
+                this.loyaltyPoints = lp
+            }
+        )
+    }
 }

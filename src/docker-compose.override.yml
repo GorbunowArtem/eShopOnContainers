@@ -42,7 +42,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
-      - SpaClient=http://localhost:5104 
+      - SpaClient=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5104 
       - XamarinCallback=http://${ESHOP_PROD_EXTERNAL_DNS_NAME_OR_IP}:5105/xamarincallback
       - ConnectionString=${ESHOP_AZURE_IDENTITY_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Service.IdentityDb;User Id=sa;Password=Pass@word}
       - MvcClient=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5100
@@ -218,12 +218,14 @@ services:
       - urls__grpcCatalog=http://catalog-api:81
       - urls__grpcOrdering=http://ordering-api:81
       - urls__coupons=http://coupon-api
+      - urls__loyalty=http://loyalty-api
       - CatalogUrlHC=http://catalog-api/hc
       - OrderingUrlHC=http://ordering-api/hc
       - IdentityUrlHC=http://identity-api/hc
       - BasketUrlHC=http://basket-api/hc
       - PaymentUrlHC=http://payment-api/hc
       - CouponUrlHC=http://coupon-api/hc
+      - LoyaltyUrlHC=http://loyalty-api/hc
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
     ports:
       - "5121:80"
@@ -270,24 +272,26 @@ services:
       - HealthChecksUI__HealthChecks__10__Uri=http://ordering-backgroundtasks/hc
       - HealthChecksUI__HealthChecks__11__Name=Coupon HTTP Check
       - HealthChecksUI__HealthChecks__11__Uri=http://coupon-api/hc
+      - HealthChecksUI__HealthChecks__12__Name=Loyalty HTTP Check
+      - HealthChecksUI__HealthChecks__12__Uri=http://loyalty-api/hc
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5107:80"
 
-#  webspa:
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Production
-#      - ASPNETCORE_URLS=http://0.0.0.0:80
-#      - IdentityUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-#      - PurchaseUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
-#      - IdentityUrlHC=http://identity-api/hc
-#      - UseCustomizationData=True
-#      - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
-#      - OrchestratorType=${ORCHESTRATOR_TYPE}
-#      - SignalrHubUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
-#    ports:
-#      - "5104:80"
+  webspa:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - IdentityUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - PurchaseUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
+      - IdentityUrlHC=http://identity-api/hc
+      - UseCustomizationData=True
+      - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+      - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - SignalrHubUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
+    ports:
+      - "5104:80"
 
 #  webmvc:
 #    environment:
@@ -357,7 +361,7 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
       - Serilog__MinimumLevel__Override__loyalty-api=Verbose
-      - PATH_BASE=/coupon-api
+      - PATH_BASE=/loyalty-api
       - PORT=80
     ports :
       - "5116:80"

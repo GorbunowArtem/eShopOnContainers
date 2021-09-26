@@ -33,6 +33,8 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Config
 
         public string Catalog { get; set; }
         public string Coupons { get; set; }
+        
+        public string Loyalty { get; set; }
 
         public string Orders { get; set; }
 
